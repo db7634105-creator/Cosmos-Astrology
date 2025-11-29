@@ -46,7 +46,7 @@ class AstrologerApp:
         
         title_label = tk.Label(
             header_frame,
-            text="✨ Astrologers Directory ✨",
+            text="Astrologers Directory",
             font=("Arial", 28, "bold"),
             fg="#4a3f8f",
             bg="#f0f0f0"
@@ -161,7 +161,7 @@ class AstrologerApp:
         # Rating
         rating_label = tk.Label(
             card_frame,
-            text=f"⭐ Rating: {astrologer['rating']}/5.0",
+            text=f"Rating: {astrologer['rating']}/5.0",
             font=("Arial", 9),
             bg="white",
             fg="#ff9800"
@@ -175,7 +175,7 @@ class AstrologerApp:
         # Call button
         call_button = tk.Button(
             card_frame,
-            text="📞 Call Now",
+            text="Call Now",
             font=("Arial", 11, "bold"),
             bg="#4a3f8f",
             fg="white",
@@ -248,7 +248,7 @@ Specialization: {astrologer['specialization']}
 
 Experience: {astrologer['experience']}
 
-Rating: {astrologer['rating']}/5.0 ⭐
+Rating: {astrologer['rating']}/5.0
 
 Phone: {astrologer['phone']}
 
@@ -302,3 +302,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
