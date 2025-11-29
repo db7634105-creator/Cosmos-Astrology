@@ -93,7 +93,7 @@ class YouTubeChannelViewer:
         header_frame = ttk.Frame(parent, height=80)
         header_frame.pack(fill=tk.X, padx=10, pady=10)
         
-        title_label = ttk.Label(header_frame, text="📺 YouTube Channel Videos", font=('Helvetica', 16, 'bold'))
+        title_label = ttk.Label(header_frame, text="YouTube Channel Videos", font=('Helvetica', 16, 'bold'))
         title_label.pack(anchor=tk.W, pady=5)
         
         subtitle_label = ttk.Label(header_frame, text="Dinesh Bohara's Channel - All Videos", font=('Helvetica', 10))
@@ -183,7 +183,7 @@ class YouTubeChannelViewer:
                 self.status_label.config(text="Could not load videos. Check internet connection or API key.")
                 messagebox.showwarning("Warning", "Could not load videos from the channel. Please check your internet connection.")
             else:
-                self.status_label.config(text=f"✅ Loaded {len(self.videos)} videos from channel")
+                self.status_label.config(text=f"Loaded {len(self.videos)} videos from channel")
             
             self.display_current_page()
             
@@ -505,4 +505,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
