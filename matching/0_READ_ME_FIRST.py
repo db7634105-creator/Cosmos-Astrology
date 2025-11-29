@@ -7,7 +7,7 @@ README = r"""
 ║                                                                            ║
 ╚════════════════════════════════════════════════════════════════════════════╝"""
 
-📋 QUICK NAVIGATION
+ QUICK NAVIGATION
 ═══════════════════════════════════════════════════════════════════════════
 
 1️⃣  NEW USER? → START_HERE.txt or QUICKSTART.md
@@ -17,10 +17,10 @@ README = r"""
 
 ═══════════════════════════════════════════════════════════════════════════
 
-🎯 WHAT YOU GET
+ WHAT YOU GET
 ═══════════════════════════════════════════════════════════════════════════
 
-✅ Complete Matching Algorithm (Guna Milan System)
+ Complete Matching Algorithm (Guna Milan System)
    • Nadi (8 pts) - Nervous Temperament
    • Gana (6 pts) - Nature & Character
    • Yoni (4 pts) - Sexual Compatibility
@@ -29,23 +29,23 @@ README = r"""
    • Rajju (8 pts) - Family Line
    • TOTAL: 36 Points
 
-✅ Interactive Input System
+ Interactive Input System
    • Boy's details (name, birth date, time, attributes)
    • Girl's details (same as above)
    • Automatic calculations
 
-✅ Beautiful Report Format
+ Beautiful Report Format
    • Overall compatibility score & percentage
    • Detailed factor breakdown
    • Visual progress bars
    • Interpretation & rating
 
-✅ Data Saving
+ Data Saving
    • Export results to JSON
    • Keep records for future reference
    • Compare multiple matches
 
-✅ Complete Documentation
+ Complete Documentation
    • START_HERE.txt (This file)
    • QUICKSTART.md (User guide)
    • README.md (Full documentation)
@@ -53,7 +53,7 @@ README = r"""
 
 ═══════════════════════════════════════════════════════════════════════════
 
-⚡ QUICK START (30 SECONDS)
+ QUICK START (30 SECONDS)
 ═══════════════════════════════════════════════════════════════════════════
 
 1. Open PowerShell:
@@ -257,3 +257,4 @@ Ready to match? Run: python astrology_matcher.py
 
 if __name__ == "__main__":
     print(README)
+
