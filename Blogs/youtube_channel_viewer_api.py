@@ -132,10 +132,10 @@ class YouTubeChannelViewerAPI:
         self.next_btn = ttk.Button(button_frame, text="Next →", command=self.next_page)
         self.next_btn.pack(side=tk.LEFT, padx=5)
         
-        refresh_btn = ttk.Button(button_frame, text="🔄 Refresh", command=self.load_videos_thread)
+        refresh_btn = ttk.Button(button_frame, text="Refresh", command=self.load_videos_thread)
         refresh_btn.pack(side=tk.LEFT, padx=20)
         
-        api_btn = ttk.Button(button_frame, text="🔑 Set API Key", command=self.set_api_key)
+        api_btn = ttk.Button(button_frame, text="Set API Key", command=self.set_api_key)
         api_btn.pack(side=tk.LEFT, padx=5)
     
     def load_api_key(self):
@@ -198,7 +198,7 @@ class YouTubeChannelViewerAPI:
             return
         
         self.is_loading = True
-        self.status_label.config(text="🔄 Loading videos from channel...")
+        self.status_label.config(text="Loading videos from channel...")
         self.root.update()
         
         thread = threading.Thread(target=self.load_videos, daemon=True)
@@ -211,15 +211,15 @@ class YouTubeChannelViewerAPI:
             self.current_page = 0
             
             if not self.videos:
-                self.status_label.config(text="❌ Could not load videos")
+                self.status_label.config(text="Could not load videos")
                 messagebox.showwarning("Warning", "Could not load videos. Please check your connection or set an API key.")
             else:
-                self.status_label.config(text=f"✅ Loaded {len(self.videos)} videos")
+                self.status_label.config(text=f"Loaded {len(self.videos)} videos")
             
             self.display_current_page()
             
         except Exception as e:
-            self.status_label.config(text=f"❌ Error: {str(e)}")
+            self.status_label.config(text=f"Error: {str(e)}")
             print(f"Error loading videos: {e}")
         finally:
             self.is_loading = False
@@ -446,3 +446,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
