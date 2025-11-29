@@ -1,0 +1,49 @@
+{
+  "boy_name": "Sahil",
+  "girl_name": "asmita",
+  "details": {
+    "nadi": {
+      "score": 0,
+      "max": 8,
+      "boy_nadi": "Pitta",
+      "girl_nadi": "Pitta",
+      "description": "Nervous Temperament Compatibility"
+    },
+    "gana": {
+      "score": 6,
+      "max": 6,
+      "boy_gana": "Deva",
+      "girl_gana": "Deva",
+      "description": "Nature/Character Compatibility"
+    },
+    "yoni": {
+      "score": 4,
+      "max": 4,
+      "boy_yoni": "Ashwa",
+      "girl_yoni": "Ashwa",
+      "description": "Sexual/Physical Compatibility"
+    },
+    "rashi": {
+      "score": 7,
+      "max": 7,
+      "boy_rashi": "Scorpio",
+      "girl_rashi": "Scorpio",
+      "description": "Zodiac Sign Compatibility"
+    },
+    "bhakut": {
+      "score": 3,
+      "max": 7,
+      "description": "Nature/Strength Compatibility"
+    },
+    "rajju": {
+      "score": 0,
+      "max": 8,
+      "boy_rajju": "Parivartana",
+      "girl_rajju": "Parivartana",
+      "description": "Family Line Compatibility"
+    }
+  },
+  "total_score": 20,
+  "max_score": 36,
+  "percentage": 55.56
+}

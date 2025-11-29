@@ -1,0 +1,49 @@
+{
+  "boy_name": "Raj",
+  "girl_name": "Priya",
+  "details": {
+    "nadi": {
+      "score": 0,
+      "max": 8,
+      "boy_nadi": "Pitta",
+      "girl_nadi": "Pitta",
+      "description": "Nervous Temperament Compatibility"
+    },
+    "gana": {
+      "score": 6,
+      "max": 6,
+      "boy_gana": "Deva",
+      "girl_gana": "Manusha",
+      "description": "Nature/Character Compatibility"
+    },
+    "yoni": {
+      "score": 3,
+      "max": 4,
+      "boy_yoni": "Ashwa",
+      "girl_yoni": "Gaj",
+      "description": "Sexual/Physical Compatibility"
+    },
+    "rashi": {
+      "score": 3,
+      "max": 7,
+      "boy_rashi": "Leo",
+      "girl_rashi": "Scorpio",
+      "description": "Zodiac Sign Compatibility"
+    },
+    "bhakut": {
+      "score": 3,
+      "max": 7,
+      "description": "Nature/Strength Compatibility"
+    },
+    "rajju": {
+      "score": 8,
+      "max": 8,
+      "boy_rajju": "Adi",
+      "girl_rajju": "Madhya",
+      "description": "Family Line Compatibility"
+    }
+  },
+  "total_score": 23,
+  "max_score": 36,
+  "percentage": 63.89
+}

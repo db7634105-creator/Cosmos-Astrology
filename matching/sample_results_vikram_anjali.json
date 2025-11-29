@@ -1,0 +1,49 @@
+{
+  "boy_name": "Vikram",
+  "girl_name": "Anjali",
+  "details": {
+    "nadi": {
+      "score": 8,
+      "max": 8,
+      "boy_nadi": "Kapha",
+      "girl_nadi": "Pitta",
+      "description": "Nervous Temperament Compatibility"
+    },
+    "gana": {
+      "score": 6,
+      "max": 6,
+      "boy_gana": "Manusha",
+      "girl_gana": "Deva",
+      "description": "Nature/Character Compatibility"
+    },
+    "yoni": {
+      "score": 3,
+      "max": 4,
+      "boy_yoni": "Sinha",
+      "girl_yoni": "Mesha",
+      "description": "Sexual/Physical Compatibility"
+    },
+    "rashi": {
+      "score": 3,
+      "max": 7,
+      "boy_rashi": "Sagittarius",
+      "girl_rashi": "Taurus",
+      "description": "Zodiac Sign Compatibility"
+    },
+    "bhakut": {
+      "score": 3,
+      "max": 7,
+      "description": "Nature/Strength Compatibility"
+    },
+    "rajju": {
+      "score": 8,
+      "max": 8,
+      "boy_rajju": "Adi",
+      "girl_rajju": "Parivartana",
+      "description": "Family Line Compatibility"
+    }
+  },
+  "total_score": 31,
+  "max_score": 36,
+  "percentage": 86.11
+}
