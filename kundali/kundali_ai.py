@@ -274,8 +274,9 @@ def main():
 
     print("Done. You can open kundali.svg and kundali_planets.json for full details.")
     if name:
-        print(f"Thanks, {name} — hope the kundali helps 😊")
+        print(f"Thanks, {name} — hope the kundali helps")
 
 
 if __name__ == "__main__":
+
     main()
