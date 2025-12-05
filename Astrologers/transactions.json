@@ -1,0 +1,82 @@
+{
+    "transactions": [
+        {
+            "transaction_id": "TXN_20251205180033_0",
+            "customer_name": "testuser",
+            "astrologer_name": "Dinesh Bohara",
+            "amount": 0,
+            "payment_method": "wallet",
+            "status": "pending",
+            "call_duration": 15,
+            "timestamp": "2025-12-05T18:00:33.378516",
+            "description": "Call with Dinesh Bohara"
+        },
+        {
+            "transaction_id": "TXN_20251205180333_1",
+            "customer_name": "testuser",
+            "astrologer_name": "Dinesh Bohara",
+            "amount": 0,
+            "payment_method": "wallet",
+            "status": "completed",
+            "call_duration": 15,
+            "timestamp": "2025-12-05T18:03:33.077170",
+            "description": "Call with Dinesh Bohara"
+        },
+        {
+            "transaction_id": "TXN_20251205181836_2",
+            "customer_name": "d",
+            "astrologer_name": "Dinesh Bohara",
+            "amount": 0,
+            "payment_method": "wallet",
+            "status": "completed",
+            "call_duration": 15,
+            "timestamp": "2025-12-05T18:18:36.270674",
+            "description": "Call with Dinesh Bohara"
+        },
+        {
+            "transaction_id": "TXN_20251205182001_3",
+            "customer_name": "d",
+            "astrologer_name": "Dinesh Bohara",
+            "amount": 0,
+            "payment_method": "wallet",
+            "status": "completed",
+            "call_duration": 5,
+            "timestamp": "2025-12-05T18:20:01.976790",
+            "description": "Call with Dinesh Bohara"
+        },
+        {
+            "transaction_id": "TXN_20251205183006_4",
+            "customer_name": "d",
+            "astrologer_name": "Dinesh Bohara",
+            "amount": 0,
+            "payment_method": "wallet",
+            "status": "completed",
+            "call_duration": 5,
+            "timestamp": "2025-12-05T18:30:06.599802",
+            "description": "Call with Dinesh Bohara"
+        },
+        {
+            "transaction_id": "TXN_20251205183034_5",
+            "customer_name": "d",
+            "astrologer_name": "Anil Adhikari",
+            "amount": 0,
+            "payment_method": "wallet",
+            "status": "completed",
+            "call_duration": 5,
+            "timestamp": "2025-12-05T18:30:34.311821",
+            "description": "Call with Anil Adhikari"
+        },
+        {
+            "transaction_id": "TXN_20251205192142_6",
+            "customer_name": "d",
+            "astrologer_name": "Dinesh Bohara",
+            "amount": 0,
+            "payment_method": "wallet",
+            "status": "completed",
+            "call_duration": 1,
+            "timestamp": "2025-12-05T19:21:42.240497",
+            "description": "Call with Dinesh Bohara"
+        }
+    ],
+    "wallet_balance": {}
+}

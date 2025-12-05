@@ -24,8 +24,8 @@ def create_placeholder_image(name, size=(300, 300), color=(100, 150, 200)):
     
     # Try to use a default font, fallback to default if not available
     try:
-        font = ImageFont.truetype("arial.ttf", 30)
-        small_font = ImageFont.truetype("arial.ttf", 16)
+        font = ImageFont.truetype("sans serif.ttf", 30)
+        small_font = ImageFont.truetype("sans serif.ttf", 16)
     except:
         font = ImageFont.load_default()
         small_font = ImageFont.load_default()
