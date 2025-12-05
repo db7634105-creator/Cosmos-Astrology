@@ -1,0 +1,40 @@
+{
+    "transactions": [
+        {
+            "transaction_id": "TXN_20251205234331_0",
+            "customer_name": "Dinesh",
+            "astrologer_name": "Dinesh Bohara",
+            "amount": 0,
+            "payment_method": "wallet",
+            "status": "completed",
+            "call_duration": 1,
+            "timestamp": "2025-12-05T23:43:31.115275",
+            "description": "Call with Dinesh Bohara"
+        },
+        {
+            "transaction_id": "TXN_20251205234543_1",
+            "customer_name": "Dinesh",
+            "astrologer_name": "Sahil Chhetri",
+            "amount": 250,
+            "payment_method": "wallet",
+            "status": "completed",
+            "call_duration": 5,
+            "timestamp": "2025-12-05T23:45:43.341477",
+            "description": "Call with Sahil Chhetri"
+        },
+        {
+            "transaction_id": "TXN_20251205234625_2",
+            "customer_name": "Dinesh",
+            "astrologer_name": "Dinesh Bohara",
+            "amount": 0,
+            "payment_method": "wallet",
+            "status": "completed",
+            "call_duration": 1,
+            "timestamp": "2025-12-05T23:46:25.270011",
+            "description": "Call with Dinesh Bohara"
+        }
+    ],
+    "wallet_balance": {
+        "Dinesh": 32850.0
+    }
+}

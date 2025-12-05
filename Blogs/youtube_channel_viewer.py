@@ -45,12 +45,15 @@ class YouTubeChannelViewer:
         self.root.minsize(1000, 600)
         
         # Configuration
-        self.channel_url = "https://www.youtube.com/@--------4363"
-        self.channel_handle = "--------4363"
+        self.channel_url = "https://www.youtube.com/@DineshBohara"  # Using channel handle for yt-dlp
+        self.channel_id = "UCh7uyJchI-WGkTm1o78Xvkg"
         self.videos = []
         self.current_page = 0
         self.videos_per_page = 6
         self.is_loading = False
+        self.liked_videos = set()  # Track liked videos
+        self.video_comments = {}  # Store comments for each video
+        self.video_reviews = {}  # Store reviews for each video
         
         # Configure style
         self.setup_styles()
@@ -67,9 +70,9 @@ class YouTubeChannelViewer:
         style.theme_use('clam')
         
         # Configure colors
-        style.configure('TFrame', background='#f0f0f0')
-        style.configure('TLabel', background='#f0f0f0', foreground='#333')
-        style.configure('Header.TLabel', background='#1a1a1a', foreground='white', font=('Helvetica', 14, 'bold'))
+        style.configure('TFrame', background="#0f0f1c")
+        style.configure('TLabel', background="#FFFFFF", foreground='#333')
+        style.configure('Header.TLabel', background="#7c3005", foreground='white', font=('Helvetica', 14, 'bold'))
         style.configure('TButton', font=('Helvetica', 10))
         style.map('TButton', background=[('active', '#0066cc')])
     
@@ -195,140 +198,29 @@ class YouTubeChannelViewer:
     
     def fetch_channel_videos(self):
         """
-        Fetch videos from the YouTube channel
-        Uses multiple methods for reliability
+        Fetch the specific video
         """
-        videos = []
-        
-        # Method 1: Try using yt-dlp
-        if HAS_YT_DLP:
-            try:
-                videos = self.fetch_with_ytdlp()
-                if videos:
-                    return videos
-            except Exception as e:
-                print(f"yt-dlp method failed: {e}")
-        
-        # Method 2: Try scraping the channel page
-        try:
-            videos = self.fetch_with_web_scraping()
-            if videos:
-                return videos
-        except Exception as e:
-            print(f"Web scraping method failed: {e}")
-        
-        # Method 3: Return sample data for demonstration
-        return self.get_sample_videos()
+        # Use the specific video provided
+        video_id = 'CpqQFCIQURY'
+        video = {
+            'id': video_id,
+            'title': 'Featured Video',
+            'thumbnail': self.get_youtube_thumbnail_url(video_id, 'high'),
+            'duration': 0,
+            'url': f"https://www.youtube.com/watch?v={video_id}",
+            'upload_date': 'Recent',
+            'view_count': 0,
+            'likes': 0,
+            'comments': 0,
+            'reviews': 0,
+        }
+        return [video]
     
-    def fetch_with_ytdlp(self):
-        """Fetch videos using yt-dlp"""
-        videos = []
-        try:
-            ydl_opts = {
-                'quiet': True,
-                'no_warnings': True,
-                'extract_flat': True,
-                'skip_download': True,
-            }
-            
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                channel_url = f"https://www.youtube.com/@{self.channel_handle}/videos"
-                info = ydl.extract_info(channel_url, download=False)
-                
-                if 'entries' in info:
-                    for entry in info['entries'][:50]:  # Get up to 50 videos
-                        video_id = entry.get('id')
-                        video = {
-                            'id': video_id,
-                            'title': entry.get('title', 'Unknown'),
-                            'thumbnail': self.get_youtube_thumbnail_url(video_id, 'high'),  # Use YouTube thumbnail URL
-                            'duration': entry.get('duration', 0),
-                            'url': f"https://www.youtube.com/watch?v={video_id}",
-                            'upload_date': entry.get('upload_date', 'Unknown'),
-                            'view_count': entry.get('view_count', 0),
-                        }
-                        videos.append(video)
-        
-        except Exception as e:
-            print(f"Error in fetch_with_ytdlp: {e}")
-        
-        return videos
+
     
-    def fetch_with_web_scraping(self):
-        """Fetch videos by scraping the channel page"""
-        videos = []
-        try:
-            if not HAS_BEAUTIFULSOUP:
-                return videos
-            
-            channel_url = f"https://www.youtube.com/@{self.channel_handle}/videos"
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            }
-            
-            response = requests.get(channel_url, headers=headers, timeout=10)
-            response.raise_for_status()
-            
-            # Extract JSON data from the page
-            soup = BeautifulSoup(response.content, 'html.parser')
-            
-            # Find script tags containing video data
-            scripts = soup.find_all('script')
-            for script in scripts:
-                if 'var ytInitialData' in script.string:
-                    # Extract JSON from the script
-                    json_str = script.string.split('var ytInitialData = ')[1].split(';')[0]
-                    data = json.loads(json_str)
-                    
-                    # Parse the data to extract video information
-                    videos = self.parse_youtube_data(data)
-                    break
-        
-        except Exception as e:
-            print(f"Error in fetch_with_web_scraping: {e}")
-        
-        return videos
+
     
-    def parse_youtube_data(self, data):
-        """Parse YouTube's JSON data to extract video information"""
-        videos = []
-        try:
-            # Navigate through the nested structure
-            tabs = data['contents']['twoColumnBrowseResultsRenderer']['tabs']
-            
-            for tab in tabs:
-                if 'tabRenderer' in tab and tab['tabRenderer'].get('selected'):
-                    section_list = tab['tabRenderer']['content']['sectionListRenderer']['contents']
-                    
-                    for section in section_list:
-                        if 'itemSectionRenderer' in section:
-                            items = section['itemSectionRenderer']['contents']
-                            
-                            for item in items:
-                                if 'gridRenderer' in item:
-                                    grid_items = item['gridRenderer']['items']
-                                    
-                                    for grid_item in grid_items:
-                                        if 'gridVideoRenderer' in grid_item:
-                                            video_data = grid_item['gridVideoRenderer']
-                                            video_id = video_data['videoId']
-                                            title = video_data['title']['runs'][0]['text']
-                                            
-                                            video = {
-                                                'id': video_id,
-                                                'title': title,
-                                                'thumbnail': self.get_youtube_thumbnail_url(video_id, 'high'),
-                                                'url': f"https://www.youtube.com/watch?v={video_id}",
-                                                'duration': 0,
-                                                'upload_date': 'Recent',
-                                                'view_count': 0,
-                                            }
-                                            videos.append(video)
-        
-        except Exception as e:
-            print(f"Error parsing YouTube data: {e}")
-        
-        return videos
+
     
     def get_youtube_thumbnail_url(self, video_id, quality='medium'):
         """
@@ -345,30 +237,11 @@ class YouTubeChannelViewer:
         }
         return quality_map.get(quality, quality_map['medium'])
     
-    def get_sample_videos(self):
-        """Return sample videos for demonstration"""
-        # This provides a fallback with sample data
-        sample_videos = [
-            {
-                'id': 'sample1',
-                'title': 'How to Get Started with Python Programming',
-                'thumbnail': self.get_youtube_thumbnail_url('sample1', 'high'),
-                'url': 'https://www.youtube.com/@5MinutesEngineering',
-                'duration': 1200,
-                'upload_date': '2024-01-15',
-                'view_count': 5000,
-            },
-            {
-                'id': 'sample2',
-                'title': 'Advanced Web Development with Django',
-                'thumbnail': self.get_youtube_thumbnail_url('sample2', 'high'),
-                'url': 'https://www.youtube.com/@5MinutesEngineering',
-                'duration': 1800,
-                'upload_date': '2024-01-10',
-                'view_count': 3200,
-            },
-        ]
-        return sample_videos
+
+    
+
+    
+
     
     def display_current_page(self):
         """Display videos for the current page"""
@@ -404,14 +277,19 @@ class YouTubeChannelViewer:
             self.create_video_card(videos_frame, video, row, col)
     
     def create_video_card(self, parent, video, row, col):
-        """Create a video card widget"""
-        card_frame = ttk.Frame(parent, relief=tk.RIDGE, borderwidth=1)
-        card_frame.grid(row=row, column=col, padx=5, pady=5, sticky=(tk.W, tk.E, tk.N, tk.S))
+        """Create a video card widget with likes, comments, and reviews"""
+        card_frame = tk.Frame(parent, relief=tk.RAISED, borderwidth=2, bg='white')
+        card_frame.grid(row=row, column=col, padx=8, pady=8, sticky=(tk.W, tk.E, tk.N, tk.S))
         
-        # Make it clickable
-        card_frame.bind('<Button-1>', lambda e: self.open_video(video))
-        card_frame.bind('<Enter>', lambda e: card_frame.config(relief=tk.RAISED))
-        card_frame.bind('<Leave>', lambda e: card_frame.config(relief=tk.RIDGE))
+        # Hover effect
+        def on_enter(e):
+            card_frame.config(relief=tk.SUNKEN, bg='#f0f0f0')
+        
+        def on_leave(e):
+            card_frame.config(relief=tk.RAISED, bg='white')
+        
+        card_frame.bind('<Enter>', on_enter)
+        card_frame.bind('<Leave>', on_leave)
         
         try:
             # Download and display thumbnail
@@ -420,13 +298,22 @@ class YouTubeChannelViewer:
             img = img.resize((320, 180), Image.Resampling.LANCZOS)
             photo = ImageTk.PhotoImage(img)
             
-            thumb_label = tk.Label(card_frame, image=photo, cursor="hand2")
-            thumb_label.image = photo  # Keep a reference
+            # Thumbnail with play button
+            thumb_frame = tk.Frame(card_frame, bg='black', height=180)
+            thumb_frame.pack(fill=tk.X)
+            
+            thumb_label = tk.Label(thumb_frame, image=photo, cursor="hand2")
+            thumb_label.image = photo
             thumb_label.pack()
             
-            thumb_label.bind('<Button-1>', lambda e: self.open_video(video))
-            thumb_label.bind('<Enter>', lambda e: card_frame.config(relief=tk.RAISED))
-            thumb_label.bind('<Leave>', lambda e: card_frame.config(relief=tk.RIDGE))
+            # Play button overlay
+            play_btn = tk.Button(thumb_frame, text="▶ PLAY", font=('Helvetica', 12, 'bold'), 
+                               bg='#ff0000', fg='white', padx=15, pady=5,
+                               command=lambda: self.open_video_on_youtube(video),
+                               cursor="hand2", activebackground='#cc0000')
+            play_btn.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+            
+            thumb_label.bind('<Button-1>', lambda e: self.open_video_on_youtube(video))
         
         except Exception as e:
             print(f"Error loading thumbnail: {e}")
@@ -434,15 +321,13 @@ class YouTubeChannelViewer:
             placeholder.pack()
         
         # Title
-        title_label = ttk.Label(card_frame, text=video['title'], wraplength=300, justify=tk.LEFT, font=('Helvetica', 9, 'bold'))
-        title_label.pack(padx=5, pady=5, fill=tk.X)
-        title_label.bind('<Button-1>', lambda e: self.open_video(video))
-        title_label.bind('<Enter>', lambda e: card_frame.config(relief=tk.RAISED))
-        title_label.bind('<Leave>', lambda e: card_frame.config(relief=tk.RIDGE))
+        title_label = tk.Label(card_frame, text=video['title'], wraplength=310, justify=tk.LEFT, 
+                              font=('Helvetica', 10, 'bold'), bg='white', fg='#000000', padx=8, pady=8)
+        title_label.pack(fill=tk.X)
         
         # Details frame
-        details_frame = ttk.Frame(card_frame)
-        details_frame.pack(padx=5, pady=3, fill=tk.X)
+        details_frame = tk.Frame(card_frame, bg='white')
+        details_frame.pack(padx=8, pady=3, fill=tk.X)
         
         # Format upload date
         upload_date = video.get('upload_date', 'Unknown')
@@ -460,25 +345,297 @@ class YouTubeChannelViewer:
         else:
             views_text = "Recent"
         
-        details_label = ttk.Label(details_frame, text=f"{views_text} • {upload_date}", font=('Helvetica', 8), foreground='#666')
+        details_label = tk.Label(details_frame, text=f"{views_text} • {upload_date}", font=('Helvetica', 8), 
+                               bg='white', fg='#666666')
         details_label.pack(fill=tk.X)
-        details_label.bind('<Button-1>', lambda e: self.open_video(video))
-        details_label.bind('<Enter>', lambda e: card_frame.config(relief=tk.RAISED))
-        details_label.bind('<Leave>', lambda e: card_frame.config(relief=tk.RIDGE))
         
-        # Make all widgets in frame clickable
-        for widget in card_frame.winfo_children():
-            widget.bind('<Button-1>', lambda e: self.open_video(video))
-            widget.bind('<Enter>', lambda e: card_frame.config(relief=tk.RAISED))
-            widget.bind('<Leave>', lambda e: card_frame.config(relief=tk.RIDGE))
+        # Engagement stats section (likes, comments, reviews)
+        engagement_frame = tk.Frame(card_frame, bg='#f9f9f9', height=70)
+        engagement_frame.pack(fill=tk.X, padx=0, pady=5)
+        
+        # Get engagement stats
+        video_id = video.get('id')
+        likes = len([vid for vid in self.liked_videos if vid == video_id])
+        comments = video.get('comments', 0)
+        reviews = video.get('reviews', 0)
+        
+        # Engagement row 1: Likes and Comments
+        engagement_row1 = tk.Frame(engagement_frame, bg='#f9f9f9')
+        engagement_row1.pack(fill=tk.X, padx=5, pady=3)
+        
+        like_btn = tk.Button(engagement_row1, text=f"👍 Like", bg='#e3f2fd', fg='#1976d2', 
+                            font=('Helvetica', 9), relief=tk.FLAT, cursor="hand2", padx=8, pady=4,
+                            command=lambda: self.like_video(video, card_frame))
+        like_btn.pack(side=tk.LEFT, padx=3)
+        
+        comment_btn = tk.Button(engagement_row1, text=f"💬 Comments ({len(self.video_comments.get(video_id, []))})", bg='#f3e5f5', fg='#7b1fa2', 
+                               font=('Helvetica', 9), relief=tk.FLAT, cursor="hand2", padx=8, pady=4,
+                               command=lambda: self.show_comments_window(video))
+        comment_btn.pack(side=tk.LEFT, padx=3)
+        
+        # Engagement row 2: Reviews and Rating
+        engagement_row2 = tk.Frame(engagement_frame, bg='#f9f9f9')
+        engagement_row2.pack(fill=tk.X, padx=5, pady=3)
+        
+        review_btn = tk.Button(engagement_row2, text=f"⭐ Reviews ({len(self.video_reviews.get(video_id, []))})", bg='#fff3e0', fg='#f57c00', 
+                              font=('Helvetica', 9), relief=tk.FLAT, cursor="hand2", padx=8, pady=4,
+                              command=lambda: self.show_reviews_window(video))
+        review_btn.pack(side=tk.LEFT, padx=3)
+        
+        share_btn = tk.Button(engagement_row2, text="🔗 Share", bg='#e8f5e9', fg='#388e3c', 
+                             font=('Helvetica', 9), relief=tk.FLAT, cursor="hand2", padx=8, pady=4,
+                             command=lambda: self.copy_link_to_clipboard(video))
+        share_btn.pack(side=tk.LEFT, padx=3)
+        
+        # Divider
+        divider = tk.Frame(card_frame, bg='#e0e0e0', height=1)
+        divider.pack(fill=tk.X, padx=5, pady=3)
     
     def open_video(self, video):
         """Open the video on YouTube"""
-        url = video.get('url')
+        self.open_video_on_youtube(video)
+    
+    def open_video_on_youtube(self, video):
+        """Open the exact video on YouTube"""
+        video_id = video.get('id')
+        if video_id and video_id != 'sample1' and video_id != 'sample2':
+            url = f"https://www.youtube.com/watch?v={video_id}"
+        else:
+            url = video.get('url')
+        
         if url:
             webbrowser.open(url)
+            messagebox.showinfo("Opening Video", f"Opening video in YouTube...\n\n{video.get('title', 'Video')}")
         else:
             messagebox.showerror("Error", "Could not get video URL")
+    
+    def copy_link_to_clipboard(self, video):
+        """Copy video link to clipboard"""
+        video_id = video.get('id')
+        if video_id:
+            url = f"https://www.youtube.com/watch?v={video_id}"
+            self.root.clipboard_clear()
+            self.root.clipboard_append(url)
+            messagebox.showinfo("Copied", f"Video link copied to clipboard!\n\n{url}")
+    
+    def like_video(self, video, card_frame):
+        """Like/Unlike a video"""
+        video_id = video.get('id')
+        if video_id in self.liked_videos:
+            self.liked_videos.remove(video_id)
+            messagebox.showinfo("Like Removed", "You unliked this video!")
+        else:
+            self.liked_videos.add(video_id)
+            messagebox.showinfo("Liked", "You liked this video! 👍")
+        
+        # Refresh the display
+        self.display_current_page()
+    
+    def show_comments_window(self, video):
+        """Show comments window for a video"""
+        video_id = video.get('id')
+        video_title = video.get('title', 'Video')
+        
+        # Create new window
+        comments_window = tk.Toplevel(self.root)
+        comments_window.title(f"Comments - {video_title[:50]}")
+        comments_window.geometry("600x500")
+        comments_window.resizable(True, True)
+        
+        # Header
+        header = tk.Label(comments_window, text=f"💬 Comments for: {video_title[:60]}", 
+                         font=('Helvetica', 12, 'bold'), bg='#f3e5f5', fg='#7b1fa2', padx=10, pady=10)
+        header.pack(fill=tk.X)
+        
+        # Comments display area
+        comments_frame = tk.Frame(comments_window)
+        comments_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        scrollbar = ttk.Scrollbar(comments_frame)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        comments_text = tk.Text(comments_frame, font=('Helvetica', 10), yscrollcommand=scrollbar.set,
+                               wrap=tk.WORD, bg='#ffffff', fg='#333333')
+        comments_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar.config(command=comments_text.yview)
+        comments_text.config(state=tk.DISABLED)
+        
+        # Display existing comments
+        if video_id in self.video_comments:
+            comments_text.config(state=tk.NORMAL)
+            for comment in self.video_comments[video_id]:
+                comments_text.insert(tk.END, f"👤 {comment['user']}\n{comment['text']}\n" + "-"*60 + "\n\n")
+            comments_text.config(state=tk.DISABLED)
+        else:
+            comments_text.config(state=tk.NORMAL)
+            comments_text.insert(tk.END, "No comments yet. Be the first to comment!")
+            comments_text.config(state=tk.DISABLED)
+        
+        # Comment input area
+        input_frame = tk.Frame(comments_window, bg='#f0f0f0')
+        input_frame.pack(fill=tk.X, padx=10, pady=10)
+        
+        # User name input
+        name_label = tk.Label(input_frame, text="Name:", font=('Helvetica', 10), bg='#f0f0f0')
+        name_label.pack(anchor=tk.W, pady=(0, 5))
+        name_entry = tk.Entry(input_frame, font=('Helvetica', 10), width=50)
+        name_entry.pack(anchor=tk.W, fill=tk.X)
+        
+        # Comment text input
+        comment_label = tk.Label(input_frame, text="Your Comment:", font=('Helvetica', 10), bg='#f0f0f0')
+        comment_label.pack(anchor=tk.W, pady=(10, 5))
+        comment_text = tk.Text(input_frame, font=('Helvetica', 10), height=4, wrap=tk.WORD, bg='#ffffff')
+        comment_text.pack(anchor=tk.W, fill=tk.BOTH, expand=True)
+        
+        # Post button
+        def post_comment():
+            user_name = name_entry.get().strip()
+            comment_content = comment_text.get("1.0", tk.END).strip()
+            
+            if not user_name or not comment_content:
+                messagebox.showwarning("Empty Fields", "Please enter both name and comment!")
+                return
+            
+            # Add comment to storage
+            if video_id not in self.video_comments:
+                self.video_comments[video_id] = []
+            
+            self.video_comments[video_id].append({
+                'user': user_name,
+                'text': comment_content,
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M')
+            })
+            
+            # Clear inputs
+            name_entry.delete(0, tk.END)
+            comment_text.delete("1.0", tk.END)
+            
+            # Update display
+            comments_text.config(state=tk.NORMAL)
+            comments_text.delete("1.0", tk.END)
+            for comment in self.video_comments[video_id]:
+                comments_text.insert(tk.END, f"👤 {comment['user']}\n{comment['text']}\n" + "-"*60 + "\n\n")
+            comments_text.config(state=tk.DISABLED)
+            
+            messagebox.showinfo("Success", "Comment posted successfully!")
+            
+            # Refresh main window
+            self.display_current_page()
+        
+        post_btn = tk.Button(input_frame, text="📤 Post Comment", bg='#7b1fa2', fg='white',
+                            font=('Helvetica', 10, 'bold'), cursor="hand2", command=post_comment)
+        post_btn.pack(pady=10, fill=tk.X)
+    
+    def show_reviews_window(self, video):
+        """Show reviews window for a video"""
+        video_id = video.get('id')
+        video_title = video.get('title', 'Video')
+        
+        # Create new window
+        reviews_window = tk.Toplevel(self.root)
+        reviews_window.title(f"Reviews - {video_title[:50]}")
+        reviews_window.geometry("600x500")
+        reviews_window.resizable(True, True)
+        
+        # Header
+        header = tk.Label(reviews_window, text=f"⭐ Reviews for: {video_title[:60]}", 
+                         font=('Helvetica', 12, 'bold'), bg='#fff3e0', fg='#f57c00', padx=10, pady=10)
+        header.pack(fill=tk.X)
+        
+        # Reviews display area
+        reviews_frame = tk.Frame(reviews_window)
+        reviews_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        scrollbar = ttk.Scrollbar(reviews_frame)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        reviews_text = tk.Text(reviews_frame, font=('Helvetica', 10), yscrollcommand=scrollbar.set,
+                              wrap=tk.WORD, bg='#ffffff', fg='#333333')
+        reviews_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar.config(command=reviews_text.yview)
+        reviews_text.config(state=tk.DISABLED)
+        
+        # Display existing reviews
+        if video_id in self.video_reviews:
+            reviews_text.config(state=tk.NORMAL)
+            for review in self.video_reviews[video_id]:
+                rating_stars = "⭐" * review['rating']
+                reviews_text.insert(tk.END, f"👤 {review['user']} - {rating_stars} ({review['rating']}/5)\n{review['text']}\n" + "-"*60 + "\n\n")
+            reviews_text.config(state=tk.DISABLED)
+        else:
+            reviews_text.config(state=tk.NORMAL)
+            reviews_text.insert(tk.END, "No reviews yet. Be the first to review!")
+            reviews_text.config(state=tk.DISABLED)
+        
+        # Review input area
+        input_frame = tk.Frame(reviews_window, bg='#f0f0f0')
+        input_frame.pack(fill=tk.X, padx=10, pady=10)
+        
+        # User name input
+        name_label = tk.Label(input_frame, text="Name:", font=('Helvetica', 10), bg='#f0f0f0')
+        name_label.pack(anchor=tk.W, pady=(0, 5))
+        name_entry = tk.Entry(input_frame, font=('Helvetica', 10), width=50)
+        name_entry.pack(anchor=tk.W, fill=tk.X)
+        
+        # Rating input
+        rating_label = tk.Label(input_frame, text="Rating (1-5 stars):", font=('Helvetica', 10), bg='#f0f0f0')
+        rating_label.pack(anchor=tk.W, pady=(10, 5))
+        rating_frame = tk.Frame(input_frame, bg='#f0f0f0')
+        rating_frame.pack(anchor=tk.W, fill=tk.X)
+        
+        rating_var = tk.IntVar(value=5)
+        for i in range(1, 6):
+            rb = tk.Radiobutton(rating_frame, text=f"{i} ⭐", variable=rating_var, value=i,
+                              font=('Helvetica', 10), bg='#f0f0f0')
+            rb.pack(side=tk.LEFT, padx=5)
+        
+        # Review text input
+        review_label = tk.Label(input_frame, text="Your Review:", font=('Helvetica', 10), bg='#f0f0f0')
+        review_label.pack(anchor=tk.W, pady=(10, 5))
+        review_text = tk.Text(input_frame, font=('Helvetica', 10), height=4, wrap=tk.WORD, bg='#ffffff')
+        review_text.pack(anchor=tk.W, fill=tk.BOTH, expand=True)
+        
+        # Post button
+        def post_review():
+            user_name = name_entry.get().strip()
+            review_content = review_text.get("1.0", tk.END).strip()
+            rating = rating_var.get()
+            
+            if not user_name or not review_content:
+                messagebox.showwarning("Empty Fields", "Please enter both name and review!")
+                return
+            
+            # Add review to storage
+            if video_id not in self.video_reviews:
+                self.video_reviews[video_id] = []
+            
+            self.video_reviews[video_id].append({
+                'user': user_name,
+                'text': review_content,
+                'rating': rating,
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M')
+            })
+            
+            # Clear inputs
+            name_entry.delete(0, tk.END)
+            review_text.delete("1.0", tk.END)
+            
+            # Update display
+            reviews_text.config(state=tk.NORMAL)
+            reviews_text.delete("1.0", tk.END)
+            for review in self.video_reviews[video_id]:
+                rating_stars = "⭐" * review['rating']
+                reviews_text.insert(tk.END, f"👤 {review['user']} - {rating_stars} ({review['rating']}/5)\n{review['text']}\n" + "-"*60 + "\n\n")
+            reviews_text.config(state=tk.DISABLED)
+            
+            messagebox.showinfo("Success", "Review posted successfully!")
+            
+            # Refresh main window
+            self.display_current_page()
+        
+        post_btn = tk.Button(input_frame, text="📤 Post Review", bg='#f57c00', fg='white',
+                            font=('Helvetica', 10, 'bold'), cursor="hand2", command=post_review)
+        post_btn.pack(pady=10, fill=tk.X)
     
     def previous_page(self):
         """Go to previous page"""

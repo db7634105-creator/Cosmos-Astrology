@@ -6,15 +6,19 @@ A standalone Python application that displays all videos from your YouTube chann
 
 ## ✨ Features
 
-- 📺 **Display All Videos**: Fetches every video from your channel
+- 📺 **Display All Videos**: Fetches real videos from your YouTube channel
 - 🖼️ **Beautiful Thumbnails**: Large, clear video preview images
 - 📝 **Video Details**: Title, view count, and upload date
-- 🔗 **Direct Links**: Click to open and watch on YouTube
+- 👍 **Like Videos**: Like/Unlike functionality with tracking
+- 💬 **Comments System**: View, add, and post comments on videos
+- ⭐ **Reviews System**: Rate videos 1-5 stars and leave reviews
+- 🔗 **Share Videos**: Copy video links to clipboard
+- 🔗 **Direct Links**: Click play button to watch on YouTube instantly
 - 📄 **Pagination**: Browse videos 6 per page
 - 🔄 **Auto-Refresh**: Update to see newly uploaded videos
 - 🖱️ **Smooth Scrolling**: Mousewheel support
-- 🌍 **No API Key Required**: Works with Version 1 out of the box
-- ⚡ **Fast Loading**: Caches videos after first load
+- 🌍 **No API Key Required**: Works with yt-dlp extraction
+- ⚡ **Fast Loading**: Smart caching and fallback methods
 
 ## 🚀 Quick Start (5 Minutes)
 
@@ -84,13 +88,41 @@ python youtube_channel_viewer.py
 
 ## 🎯 How to Use
 
-### Basic Usage
-
+### Viewing Videos
 1. **Launch** the application
 2. **Wait** for videos to load (first time: 20-30 seconds)
 3. **Browse** using Previous/Next buttons
 4. **Click** any video thumbnail to watch on YouTube
-5. **Refresh** to check for new videos
+
+### Engaging with Videos
+
+#### 👍 Liking Videos
+1. Click the **"👍 Like"** button on any video
+2. See confirmation: "You liked this video! 👍"
+3. Click again to unlike
+4. Likes are tracked during your session
+
+#### 💬 Adding Comments
+1. Click **"💬 Comments (X)"** on a video
+2. Comments window opens
+3. Enter your name
+4. Type your comment
+5. Click **"📤 Post Comment"**
+6. Your comment appears instantly!
+
+#### ⭐ Posting Reviews
+1. Click **"⭐ Reviews (X)"** on a video
+2. Reviews window opens
+3. Enter your name
+4. Select a rating (1-5 stars)
+5. Type your review
+6. Click **"📤 Post Review"**
+7. Your review displays with your rating!
+
+#### 🔗 Sharing Videos
+1. Click **"🔗 Share"** button
+2. Video link copied to clipboard
+3. Share anywhere: WhatsApp, Email, Social Media, etc.
 
 ### Controls
 
@@ -99,7 +131,11 @@ python youtube_channel_viewer.py
 | **← Previous** | Go to previous page |
 | **Next →** | Go to next page |
 | **🔄 Refresh** | Reload all videos |
-| **Click Video** | Open on YouTube |
+| **▶ PLAY** | Watch on YouTube |
+| **👍 Like** | Like/Unlike video |
+| **💬 Comments** | View/Add comments |
+| **⭐ Reviews** | View/Add reviews |
+| **🔗 Share** | Copy video link |
 
 ## 📂 Files Included
 
