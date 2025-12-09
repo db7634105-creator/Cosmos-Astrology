@@ -421,6 +421,11 @@ class KundaliGUI(QMainWindow):
         open_btn.setMaximumWidth(200)
         open_btn.clicked.connect(self.open_chart_browser)
         button_layout.addWidget(open_btn)
+
+        hindu_btn = QPushButton("Hindu Themed Chart")
+        hindu_btn.setMaximumWidth(200)
+        hindu_btn.clicked.connect(self.show_hindu_chart)
+        button_layout.addWidget(hindu_btn)
         
         button_layout.addStretch()
         layout.addLayout(button_layout)
@@ -575,14 +580,29 @@ class KundaliGUI(QMainWindow):
     def display_chart(self, svg_file: str):
         """Display SVG chart in chart tab."""
         try:
+            # Prefer loading the SVG file directly — QWebEngineView handles SVG files when loaded via file URL.
+            abs_path = os.path.abspath(svg_file)
+            self.chart_view.setUrl(QUrl.fromLocalFile(abs_path))
+            return
+        except Exception:
+            pass
+
+        # Fallback: try embedding the SVG content inside an HTML wrapper
+        try:
             with open(svg_file, 'r', encoding='utf-8') as f:
                 svg_content = f.read()
-            
-            # Wrap SVG in HTML with proper styling for centering
+
+            # Remove any XML prolog which may interfere when embedding
+            if svg_content.lstrip().startswith('<?xml'):
+                idx = svg_content.find('?>')
+                if idx != -1:
+                    svg_content = svg_content[idx+2:]
+
             html_content = f"""
             <!DOCTYPE html>
             <html>
             <head>
+                <meta charset='utf-8'/>
                 <style>
                     body {{
                         display: flex;
@@ -604,9 +624,76 @@ class KundaliGUI(QMainWindow):
             </body>
             </html>
             """
-            self.chart_view.setHtml(html_content)
+            self.chart_view.setHtml(html_content, QUrl.fromLocalFile(os.path.dirname(abs_path)))
         except Exception as e:
             self.chart_view.setHtml(f"<p style='text-align: center; margin-top: 50px;'>Could not display chart: {str(e)}</p>")
+
+    def create_hindu_html(self, svg_file: str) -> str:
+        """Create a Hindu-themed HTML wrapper around the SVG and return the HTML file path."""
+        try:
+            with open(svg_file, 'r', encoding='utf-8') as f:
+                svg_content = f.read()
+
+            # Strip XML prolog if present
+            if svg_content.lstrip().startswith('<?xml'):
+                idx = svg_content.find('?>')
+                if idx != -1:
+                    svg_content = svg_content[idx+2:]
+
+            html = f'''<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kundali — Hindu Themed Chart</title>
+  <style>
+    html,body {{height:100%; margin:0; padding:0; background: linear-gradient(180deg, #FFF3E0 0%, #FFF8E1 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif}}
+    .frame {{
+      max-width: 1000px; margin: 28px auto; padding: 24px; background: rgba(255,255,255,0.95); border-radius: 18px; box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      border: 6px solid #F9E0B2; position: relative;
+    }}
+    .om {{ position: absolute; left:50%; top:8%; transform: translateX(-50%); font-size:120px; color: rgba(165,36,61,0.08); font-family: serif; pointer-events:none }}
+    .header {{text-align:center; color:#A5243D; font-weight:700; margin-bottom:12px; font-size:22px}}
+    .sub {{text-align:center; color:#2A3D45; margin-bottom:18px}}
+    .svg-wrap {{display:flex; justify-content:center; align-items:center;}}
+    .decor-top, .decor-bottom {{height:20px; background: repeating-linear-gradient(90deg, #FDD692 0 10px, #F6A623 10px 20px); border-radius:8px}}
+    .mantra {{text-align:center; color:#7A4B2B; margin-top:14px; font-style:italic}}
+    @media (max-width:800px) {{ .om {{font-size:80px; top:6%}} .frame{{margin:12px}} }}
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="om">ॐ</div>
+    <div class="header">Rasi Chart — Divine Presentation</div>
+    <div class="sub">A sacred view of planetary positions — may it bring clarity and peace</div>
+    <div class="svg-wrap">{svg_content}</div>
+    <div class="mantra">ॐ श्री गणेशाय नमः — Om Shri Ganeshaaya Namah</div>
+  </div>
+</body>
+</html>'''
+
+            out_path = os.path.abspath('kundali_hindu.html')
+            with open(out_path, 'w', encoding='utf-8') as out:
+                out.write(html)
+            return out_path
+        except Exception:
+            return ''
+
+    def show_hindu_chart(self):
+        """Generate and display the Hindu-themed chart in the web view (or show error)."""
+        if not self.svg_file or not os.path.exists(self.svg_file):
+            QMessageBox.warning(self, "Warning", "No chart available. Please calculate kundali first.")
+            return
+
+        html_path = self.create_hindu_html(self.svg_file)
+        if not html_path:
+            QMessageBox.critical(self, "Error", "Could not generate Hindu-themed chart.")
+            return
+
+        try:
+            self.chart_view.setUrl(QUrl.fromLocalFile(html_path))
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Could not display Hindu-themed chart: {str(e)}")
     
     def open_chart_browser(self):
         """Open chart in default browser."""

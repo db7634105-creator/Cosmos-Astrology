@@ -27,7 +27,7 @@ from hindu_theme import HinduTheme, HinduThemeGuide
 class AstrologerApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("🙏 Astrologers Directory - Divine Consultation 🙏")
+        self.root.title("Astrologers Directory - Divine Consultation")
         self.root.geometry("1400x900")
         self.root.configure(bg=HinduTheme.BG_PRIMARY)
         
@@ -150,7 +150,7 @@ class AstrologerApp:
         else:
             login_btn = tk.Button(
                 right_frame,
-                text="🔐 Login",
+                text="Login",
                 font=("Arial", 10, "bold"),
                 bg=HinduTheme.NAVY,
                 fg=HinduTheme.WHITE,
@@ -184,7 +184,7 @@ class AstrologerApp:
         # History button with Hindu theme
         history_btn = tk.Button(
             right_frame,
-            text="📋 History",
+            text="History",
             font=("Arial", 10, "bold"),
             bg=HinduTheme.NAVY,
             fg=HinduTheme.WHITE,
@@ -289,7 +289,7 @@ class AstrologerApp:
         # Experience
         exp_label = tk.Label(
             card_frame,
-            text=f"📚 Experience: {astrologer['experience']}",
+            text=f" Experience: {astrologer['experience']}",
             font=("Arial", 9),
             bg=HinduTheme.WHITE,
             fg=HinduTheme.NAVY
@@ -299,7 +299,7 @@ class AstrologerApp:
         # Rating
         rating_label = tk.Label(
             card_frame,
-            text=f"⭐ Rating: {astrologer['rating']}/5.0",
+            text=f"Rating: {astrologer['rating']}/5.0",
             font=("Arial", 9),
             bg=HinduTheme.WHITE,
             fg=HinduTheme.GOLD
@@ -309,7 +309,7 @@ class AstrologerApp:
         # Price per minute with Hindu colors
         price_label = tk.Label(
             card_frame,
-            text=f"💰 FREE" if astrologer.get('is_free') else f"💰 ₨{astrologer['price_per_minute']}/min",
+            text=f" FREE" if astrologer.get('is_free') else f" ₨{astrologer['price_per_minute']}/min",
             font=("Arial", 11, "bold"),
             bg=HinduTheme.WHITE,
             fg=HinduTheme.GREEN if astrologer.get('is_free') else HinduTheme.SAFFRON
@@ -449,7 +449,7 @@ ID: {astrologer['id']}
         
         footer_label = tk.Label(
             footer_frame,
-            text=f"🙏 © 2025 Astrologers Directory - Divine Services 🙏 | Payment System Active | {HinduThemeGuide.SYMBOLS['om']}",
+            text=f"© 2025 Astrologers Directory - Divine Services | Payment System Active | {HinduThemeGuide.SYMBOLS['om']}",
             font=("Arial", 10, "bold"),
             fg=HinduTheme.GOLD,
             bg=HinduTheme.GREEN
@@ -765,19 +765,19 @@ ID: {astrologer['id']}
         header_frame.pack(fill=tk.X)
         header_frame.pack_propagate(False)
         
-        header = tk.Label(header_frame, text=f"🙏 Choose Call Package 🙏", 
+        header = tk.Label(header_frame, text=f" Choose Call Package ", 
                          font=("Arial", 16, "bold"), fg=HinduTheme.WHITE, bg=HinduTheme.SAFFRON, pady=10)
         header.pack()
         
         content_frame = tk.Frame(package_window, bg=HinduTheme.BG_PRIMARY)
         content_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=15)
         
-        astro_name = tk.Label(content_frame, text=f"💁 Astrologer: {astrologer['name']}", 
+        astro_name = tk.Label(content_frame, text=f"Astrologer: {astrologer['name']}", 
                              font=("Arial", 13, "bold"), fg=HinduTheme.SAFFRON, bg=HinduTheme.BG_PRIMARY)
         astro_name.pack(pady=(0, 20))
         
         # Package selection
-        tk.Label(content_frame, text="📦 Available Packages:", font=("Arial", 12, "bold"), fg=HinduTheme.NAVY, bg=HinduTheme.BG_PRIMARY).pack(anchor="w", pady=(10, 15))
+        tk.Label(content_frame, text="Available Packages:", font=("Arial", 12, "bold"), fg=HinduTheme.NAVY, bg=HinduTheme.BG_PRIMARY).pack(anchor="w", pady=(10, 15))
         
         selected_package = tk.StringVar(value=astrologer['packages'][0]['name'] if astrologer['packages'] else "")
         
@@ -785,7 +785,7 @@ ID: {astrologer['id']}
         packages_frame.pack(fill=tk.X, padx=0, pady=10)
         
         for package in astrologer['packages']:
-            pkg_text = f"📞 {package['name']} Call - ₨{package['price']}"
+            pkg_text = f"{package['name']} Call - ₨{package['price']}"
             tk.Radiobutton(packages_frame, text=pkg_text, variable=selected_package, 
                           value=package['name'], font=("Arial", 11, "bold"), 
                           bg=HinduTheme.BG_PRIMARY, fg=HinduTheme.NAVY, selectcolor=HinduTheme.LIGHT_GOLD).pack(anchor="w", pady=8)
@@ -793,7 +793,7 @@ ID: {astrologer['id']}
         tk.Frame(content_frame, height=2, bg=HinduTheme.GOLD).pack(fill=tk.X, pady=15)
         
         # Payment method - Get country-specific options
-        tk.Label(content_frame, text="💳 Select Payment Method:", font=("Arial", 12, "bold"), fg=HinduTheme.NAVY, bg=HinduTheme.BG_PRIMARY).pack(anchor="w")
+        tk.Label(content_frame, text="Select Payment Method:", font=("Arial", 12, "bold"), fg=HinduTheme.NAVY, bg=HinduTheme.BG_PRIMARY).pack(anchor="w")
         
         # Get user's region and available payment providers
         user_region = self.user_manager.get_user_region(self.current_user)
@@ -802,7 +802,7 @@ ID: {astrologer['id']}
         payment_method = tk.StringVar(value="Wallet")
         
         # Show country-specific providers
-        region_label = tk.Label(content_frame, text=f"🌍 Region: {user_region.upper()} {HinduThemeGuide.SYMBOLS['star']}", 
+        region_label = tk.Label(content_frame, text=f"Region: {user_region.upper()} {HinduThemeGuide.SYMBOLS['star']}", 
                                font=("Arial", 10, "italic", "bold"), fg=HinduTheme.GOLD, bg=HinduTheme.BG_PRIMARY)
         region_label.pack(anchor="w", padx=10, pady=(5, 10))
         
@@ -897,10 +897,10 @@ ID: {astrologer['id']}
         
         display_method = method_name if method_name else payment_method.value.replace('_', ' ').title()
         summary_text = f"""
-💁 Astrologer: {astrologer['name']}
-⏱️ Duration: {duration} minutes
-💰 Amount: ₨{amount}
-💳 Payment Method: {display_method}
+Astrologer: {astrologer['name']}
+Duration: {duration} minutes
+Amount: ₨{amount}
+Payment Method: {display_method}
         """
         
         tk.Label(summary_frame, text=summary_text, font=("Arial", 11, "bold"), 
@@ -911,20 +911,25 @@ ID: {astrologer['id']}
             # Khalti Payment for Nepal - Hindu theme
             notice_label = tk.Label(
                 content_frame, 
-                text="⚠️ PAYMENT IS MANDATORY TO PROCEED WITH CALL",
+                text="PAYMENT IS MANDATORY TO PROCEED WITH CALL",
                 font=("Arial", 10, "bold"),
                 fg=HinduTheme.WHITE,
                 bg=HinduTheme.CRIMSON
             )
             notice_label.pack(pady=(0, 15), padx=10, fill=tk.X)
             
-            tk.Label(content_frame, text="📱 Khalti Phone Number:", font=("Arial", 11, "bold"), fg=HinduTheme.NAVY, bg=HinduTheme.BG_PRIMARY).pack(anchor="w", pady=(0, 5))
+            tk.Label(content_frame, text="Khalti Phone Number:", font=("Arial", 11, "bold"), fg=HinduTheme.NAVY, bg=HinduTheme.BG_PRIMARY).pack(anchor="w", pady=(0, 5))
             khalti_entry = tk.Entry(content_frame, font=("Arial", 11), width=40)
             khalti_entry.pack(fill=tk.X, pady=(0, 10))
             khalti_entry.insert(0, "+977-")
             
             info_label = tk.Label(content_frame, text="(Nepali phone: 98/97XXXXXXXX)", font=("Arial", 9, "italic"), fg=HinduTheme.GOLD, bg=HinduTheme.BG_PRIMARY)
             info_label.pack(anchor="w", pady=(0, 20))
+            # Optional: allow pasting Khalti token (if payment performed via Khalti Checkout)
+            tk.Label(content_frame, text="🔐 Khalti Token (optional):", font=("Arial", 10), fg=HinduTheme.NAVY, bg=HinduTheme.BG_PRIMARY).pack(anchor="w")
+            khalti_token_entry = tk.Entry(content_frame, font=("Arial", 10), width=60)
+            khalti_token_entry.pack(fill=tk.X, pady=(0, 15))
+            tk.Label(content_frame, text="If you used Khalti Checkout, paste the returned token here for server-side verification.", font=("Arial", 9), fg=HinduTheme.GOLD, bg=HinduTheme.BG_PRIMARY).pack(anchor="w", pady=(0,10))
             
             def complete_payment():
                 phone = khalti_entry.get().strip()
@@ -933,13 +938,15 @@ ID: {astrologer['id']}
                     return
                 
                 # Process Khalti payment
+                khalti_token = khalti_token_entry.get().strip()
                 from country_payment_gateway import CountryPaymentGateway
                 success, message = CountryPaymentGateway.process_payment(
                     country="nepal",
                     payment_provider="khalti",
                     amount=amount,
                     transaction_id=f"TXN_{self.current_user}_{int(__import__('time').time())}",
-                    phone_number=phone
+                    phone_number=phone,
+                    khalti_token=khalti_token if khalti_token else None
                 )
                 
                 if success:
@@ -953,17 +960,21 @@ ID: {astrologer['id']}
             # Esewa Payment for Nepal - Hindu theme
             notice_label = tk.Label(
                 content_frame, 
-                text="⚠️ PAYMENT IS MANDATORY TO PROCEED WITH CALL",
+                text="PAYMENT IS MANDATORY TO PROCEED WITH CALL",
                 font=("Arial", 10, "bold"),
                 fg=HinduTheme.WHITE,
                 bg=HinduTheme.CRIMSON
             )
             notice_label.pack(pady=(0, 15), padx=10, fill=tk.X)
             
-            tk.Label(content_frame, text="📧 Esewa Email:", font=("Arial", 11, "bold"), fg=HinduTheme.NAVY, bg=HinduTheme.BG_PRIMARY).pack(anchor="w", pady=(0, 5))
+            tk.Label(content_frame, text="Esewa Email:", font=("Arial", 11, "bold"), fg=HinduTheme.NAVY, bg=HinduTheme.BG_PRIMARY).pack(anchor="w", pady=(0, 5))
             esewa_entry = tk.Entry(content_frame, font=("Arial", 11), width=40)
             esewa_entry.pack(fill=tk.X, pady=(0, 20))
             esewa_entry.insert(0, "user@example.com")
+            tk.Label(content_frame, text="eSewa Reference (optional):", font=("Arial", 10), fg=HinduTheme.NAVY, bg=HinduTheme.BG_PRIMARY).pack(anchor="w")
+            esewa_ref_entry = tk.Entry(content_frame, font=("Arial", 10), width=60)
+            esewa_ref_entry.pack(fill=tk.X, pady=(0, 15))
+            tk.Label(content_frame, text="If you received an eSewa reference code after payment, paste it here for server-side verification.", font=("Arial", 9), fg=HinduTheme.GOLD, bg=HinduTheme.BG_PRIMARY).pack(anchor="w", pady=(0,10))
             
             def complete_payment():
                 email = esewa_entry.get().strip()
@@ -972,13 +983,15 @@ ID: {astrologer['id']}
                     return
                 
                 # Process Esewa payment
+                esewa_ref = esewa_ref_entry.get().strip()
                 from country_payment_gateway import CountryPaymentGateway
                 success, message = CountryPaymentGateway.process_payment(
                     country="nepal",
                     payment_provider="esewa",
                     amount=amount,
                     transaction_id=f"TXN_{self.current_user}_{int(__import__('time').time())}",
-                    email=email
+                    email=email,
+                    esewa_ref=esewa_ref if esewa_ref else None
                 )
                 
                 if success:
@@ -992,7 +1005,7 @@ ID: {astrologer['id']}
             # Razorpay Payment for India - Hindu theme
             notice_label = tk.Label(
                 content_frame, 
-                text="⚠️ PAYMENT IS MANDATORY TO PROCEED WITH CALL",
+                text="PAYMENT IS MANDATORY TO PROCEED WITH CALL",
                 font=("Arial", 10, "bold"),
                 fg=HinduTheme.WHITE,
                 bg=HinduTheme.CRIMSON
@@ -1003,7 +1016,7 @@ ID: {astrologer['id']}
             tk.Label(content_frame, text="Select Payment Method:", font=("Arial", 11, "bold"), fg=HinduTheme.NAVY, bg=HinduTheme.BG_PRIMARY).pack(anchor="w", pady=(0, 10))
             
             razorpay_method = tk.StringVar(value="upi")
-            tk.Radiobutton(content_frame, text="💳 UPI", variable=razorpay_method, value="upi", 
+            tk.Radiobutton(content_frame, text="UPI", variable=razorpay_method, value="upi", 
                           font=("Arial", 11), bg="#f0f0f0").pack(anchor="w", padx=20)
             tk.Radiobutton(content_frame, text="📱 Phone", variable=razorpay_method, value="phone", 
                           font=("Arial", 11), bg="#f0f0f0").pack(anchor="w", padx=20, pady=(0, 15))
@@ -1483,11 +1496,11 @@ Thank you for using our service!
                             
                             # Update status and quality dynamically
                             if remaining <= 60 and remaining > 0:
-                                status_label.config(text="⚠️ Call ending soon...", fg="#ff9800")
-                                quality_label.config(text="📶 Network: Good", fg="#ff9800")
+                                status_label.config(text="Call ending soon...", fg="#ff9800")
+                                quality_label.config(text="Network: Good", fg="#ff9800")
                             elif remaining <= 0:
-                                status_label.config(text="⏱ Time's up! Call ended automatically.", fg="#f44336")
-                                quality_label.config(text="📶 Network: Unstable", fg="#f44336")
+                                status_label.config(text="Time's up! Call ended automatically.", fg="#f44336")
+                                quality_label.config(text="Network: Unstable", fg="#f44336")
                                 # Auto-end the call
                                 call_window.after(500, end_call)
                     

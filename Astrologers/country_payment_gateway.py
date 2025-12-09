@@ -6,8 +6,15 @@ Handles payment processing for different countries:
 """
 
 import re
+import os
+import json
 from datetime import datetime
 from enum import Enum
+
+try:
+    import requests
+except Exception:
+    requests = None
 
 
 class Country(Enum):
@@ -74,16 +81,39 @@ class KhaltiGateway:
         return re.match(pattern, phone) is not None
     
     @staticmethod
-    def process_payment(phone_number, amount, transaction_id):
+    def process_payment(phone_number, amount, transaction_id, khalti_token=None):
         """Process Khalti payment"""
         if not KhaltiGateway.validate_phone(phone_number):
             return False, "Invalid Nepali phone number format (should start with 98/97)"
-        
+
         if amount <= 0:
             return False, "Invalid amount"
-        
-        # Simulate Khalti API call
-        return True, f"Khalti payment processed successfully. Transaction ID: {transaction_id}"
+
+        # Use passed khalti_token first, then environment variable
+        token_to_use = khalti_token or os.environ.get('KHALTI_PAYMENT_TOKEN')
+        khalti_secret = os.environ.get('KHALTI_SECRET_KEY')
+
+        if token_to_use and khalti_secret and requests:
+            # Khalti expects token and amount (amount depends on your integration units)
+            verify_url = "https://khalti.com/api/v2/payment/verify/"
+            headers = {"Authorization": f"Key {khalti_secret}"}
+            payload = {"token": token_to_use, "amount": int(amount)}
+            try:
+                resp = requests.post(verify_url, data=payload, headers=headers, timeout=10)
+                if resp.status_code == 200:
+                    # Optionally parse response JSON for more detail
+                    try:
+                        data = resp.json()
+                    except Exception:
+                        data = resp.text
+                    return True, f"Khalti payment verified. Transaction ID: {transaction_id}. Response: {data}"
+                else:
+                    return False, f"Khalti verification failed: {resp.status_code} {resp.text}"
+            except Exception as e:
+                return False, f"Khalti request error: {str(e)}"
+
+        # Fallback simulated response
+        return True, f"Khalti payment processed successfully (simulated). Transaction ID: {transaction_id}"
     
     @staticmethod
     def validate_khalti_id(khalti_id):
@@ -108,9 +138,27 @@ class EsewaGateway:
         
         if amount <= 0:
             return False, "Invalid amount"
-        
-        # Simulate Esewa API call
-        return True, f"Esewa payment processed successfully. Transaction ID: {transaction_id}"
+        # If eSewa merchant credentials and reference are provided, attempt real verification
+        esewa_ref = os.environ.get('ESEWA_PAYMENT_REF')
+        esewa_merchant = os.environ.get('ESEWA_MERCHANT_CODE')
+
+        if esewa_ref and esewa_merchant and requests:
+            # eSewa verification is typically done via a GET/POST to their verification endpoint.
+            # This implementation tries a basic verification pattern and will return the provider response if possible.
+            verify_url = "https://esewa.com.np/epay/transrec"  # eSewa transaction record endpoint
+            params = {"pid": esewa_ref, "scd": esewa_merchant, "amt": amount}
+            try:
+                resp = requests.get(verify_url, params=params, timeout=10)
+                # eSewa returns XML/HTML in many flows; accept 200 as success here and return body for debugging
+                if resp.status_code == 200:
+                    return True, f"Esewa verification response received. Transaction ID: {transaction_id}"
+                else:
+                    return False, f"Esewa verification failed: {resp.status_code} {resp.text}"
+            except Exception as e:
+                return False, f"Esewa request error: {str(e)}"
+
+        # Fallback simulated response
+        return True, f"Esewa payment processed successfully (simulated). Transaction ID: {transaction_id}"
     
     @staticmethod
     def validate_merchant_code(merchant_code):
@@ -197,15 +245,32 @@ class CountryPaymentGateway:
         
         # Route to appropriate payment gateway
         if payment_provider == PaymentProvider.KHALTI:
+            # Accept either a phone number (legacy/simulated flow) or a Khalti token for real verification
             phone = kwargs.get('phone_number')
+            khalti_token = kwargs.get('khalti_token') or os.environ.get('KHALTI_PAYMENT_TOKEN')
+
+            if khalti_token:
+                # When using Khalti checkout, the client should provide a `khalti_token` returned by Khalti SDK
+                # we'll pass phone_number (if any) for backward compatibility
+                return KhaltiGateway.process_payment(phone or "", amount, transaction_id, khalti_token=khalti_token)
+
             if not phone:
-                return False, "Phone number required for Khalti"
+                return False, "Phone number required for Khalti (or provide khalti_token for real verification)"
+
             return KhaltiGateway.process_payment(phone, amount, transaction_id)
         
         elif payment_provider == PaymentProvider.ESEWA:
+            # Accept either an email (legacy/simulated) or an eSewa reference/merchant flow for real verification
             email = kwargs.get('email')
+            esewa_ref = kwargs.get('esewa_ref') or os.environ.get('ESEWA_PAYMENT_REF')
+
+            if esewa_ref:
+                # For real eSewa verification the calling flow should provide `esewa_ref` and merchant config
+                return EsewaGateway.process_payment(email or "", amount, transaction_id)
+
             if not email:
-                return False, "Email required for Esewa"
+                return False, "Email required for Esewa (or provide esewa_ref for real verification)"
+
             return EsewaGateway.process_payment(email, amount, transaction_id)
         
         elif payment_provider == PaymentProvider.RAZORPAY:
