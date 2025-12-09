@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astrology Consultation Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+        }
+
+        /* LOGIN SCREEN */
+        .login-screen {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .login-form {
+            flex: 1;
+            min-width: 350px;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .login-form h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .login-form p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: #666;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .message.error {
+            background: #fee;
+            color: #c33;
+            border-left: 4px solid #c33;
+        }
+
+        .message.success {
+            background: #efe;
+            color: #3c3;
+            border-left: 4px solid #3c3;
+        }
+
+        .welcome-banner {
+            color: white;
+            text-align: center;
+        }
+
+        .welcome-banner h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-banner p {
+            font-size: 16px;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        /* MAIN APP SCREEN */
+        .app-screen {
+            display: none;
+            height: 100vh;
+            background: #f5f5f5;
+            flex-direction: column;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 24px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-badge {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            gap: 0;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+            font-weight: 500;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: #667eea;
+            color: white;
+            border-left-color: #764ba2;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* ASK QUESTION */
+        .question-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+        }
+
+        .question-form h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* MY QUESTIONS */
+        .questions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .question-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid #667eea;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .question-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .question-card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .question-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status-pending {
+            background: #ffd700;
+            color: #333;
+        }
+
+        .status-assigned {
+            background: #87ceeb;
+            color: #333;
+        }
+
+        .status-answered {
+            background: #90ee90;
+            color: #333;
+        }
+
+        /* CHAT */
+        .chat-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            max-width: 800px;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            background: #f9f9f9;
+        }
+
+        .chat-header h3 {
+            color: #667eea;
+            margin: 0;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message-item {
+            max-width: 80%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-user {
+            align-self: flex-end;
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 0;
+        }
+
+        .message-astrologer {
+            align-self: flex-start;
+            background: #f0f0f0;
+            color: #333;
+            border-bottom-left-radius: 0;
+        }
+
+        .message-time {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            border-top: 2px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .send-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            background: #5568d3;
+        }
+
+        /* ASTROLOGERS */
+        .astrologers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .astrologer-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .astrologer-card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+        }
+
+        .astrologer-name {
+            color: #667eea;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .astrologer-info {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .rating {
+            color: #ffc107;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .consult-btn {
+            width: 100%;
+            padding: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .consult-btn:hover {
+            background: #5568d3;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .login-screen {
+                flex-direction: column;
+            }
+
+            .welcome-banner {
+                display: none;
+            }
+
+            .main-content {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                display: flex;
+                overflow-x: auto;
+                padding: 10px;
+            }
+
+            .nav-item {
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            .chat-container {
+                height: auto;
+                max-width: 100%;
+            }
+
+            .astrologers-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="container">
+        <div class="login-screen">
+            <div class="welcome-banner">
+                <h2>🔮 Astrology Consultation</h2>
+                <p>Connect with experienced astrologers and get answers to your life questions. Real consultations, real guidance.</p>
+            </div>
+
+            <div class="login-form">
+                <h1>Welcome</h1>
+                <p id="formSubtitle">Login to continue</p>
+
+                <div id="message"></div>
+
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+                    <button class="tab-btn" onclick="switchTab('register')">Register</button>
+                </div>
+
+                <!-- LOGIN FORM -->
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="loginUsername" placeholder="Enter your username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+
+                <!-- REGISTER FORM -->
+                <form id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="registerUsername" placeholder="Choose a username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="registerEmail" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="registerPassword" placeholder="Create a password (min 8 chars)" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="registerName" placeholder="Enter your full name">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP SCREEN -->
+    <div id="appScreen" class="app-screen" style="display: none;">
+        <div class="header">
+            <h1>🔮 Astrology Platform</h1>
+            <div class="user-info">
+                <div class="user-badge">Welcome, <span id="currentUsername"></span></div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="nav-item active" onclick="switchView('dashboard')">📊 Dashboard</div>
+                <div class="nav-item" onclick="switchView('ask')">❓ Ask Question</div>
+                <div class="nav-item" onclick="switchView('myQuestions')">📋 My Questions</div>
+                <div class="nav-item" onclick="switchView('astrologers')">👥 Astrologers</div>
+            </div>
+
+            <div class="content-area">
+                <!-- DASHBOARD -->
+                <div id="dashboard" class="view active">
+                    <h2>Welcome back! 🌟</h2>
+                    <div style="margin-top: 30px; color: #666; font-size: 16px; line-height: 1.8;">
+                        <p>✨ Ask your questions to experienced astrologers</p>
+                        <p>💬 Get real-time responses and guidance</p>
+                        <p>⭐ Browse and connect with verified astrologers</p>
+                        <p>🔒 Your conversations are private and secure</p>
+                    </div>
+                </div>
+
+                <!-- ASK QUESTION -->
+                <div id="ask" class="view">
+                    <div class="question-form">
+                        <h2>Ask a Question</h2>
+                        <form onsubmit="submitQuestion(event)">
+                            <div class="form-group">
+                                <label>Your Question</label>
+                                <textarea id="questionText" class="textarea" placeholder="Ask your astrology question..." required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="questionCategory" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 5px;">
+                                    <option>Love & Relationships</option>
+                                    <option>Career & Finance</option>
+                                    <option>Health & Wellness</option>
+                                    <option>Family & Relatives</option>
+                                    <option>Education</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Question</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- MY QUESTIONS -->
+                <div id="myQuestions" class="view">
+                    <h2>My Questions</h2>
+                    <div id="questionsList" class="questions-list" style="margin-top: 20px;">
+                        <div class="empty-state">
+                            <h3>No questions yet</h3>
+                            <p>Ask your first question to get started!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ASTROLOGERS -->
+                <div id="astrologers" class="view">
+                    <h2>Available Astrologers</h2>
+                    <div id="astrologersList" class="astrologers-grid" style="margin-top: 20px;">
+                        <div class="empty-state">
+                            <h3>Loading astrologers...</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let authToken = localStorage.getItem('authToken');
+        let currentUsername = localStorage.getItem('username');
+
+        // AUTHENTICATION
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('form').forEach(form => form.style.display = 'none');
+
+            if (tab === 'login') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('formSubtitle').textContent = 'Login to continue';
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('registerForm').style.display = 'block';
+                document.getElementById('formSubtitle').textContent = 'Create a new account';
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    authToken = data.access_token;
+                    localStorage.setItem('authToken', authToken);
+                    localStorage.setItem('username', username);
+                    currentUsername = username;
+                    showApp();
+                } else {
+                    showMessage('Invalid username or password', 'error');
+                }
+            } catch (err) {
+                showMessage('Login failed: ' + err.message, 'error');
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                if (response.ok) {
+                    showMessage('Account created! Please login.', 'success');
+                    setTimeout(() => switchTab('login'), 1500);
+                } else {
+                    const data = await response.json();
+                    showMessage('Registration failed: ' + (data.detail || 'Unknown error'), 'error');
+                }
+            } catch (err) {
+                showMessage('Registration failed: ' + err.message, 'error');
+            }
+        }
+
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.innerHTML = `<div class="message ${type}">${text}</div>`;
+            setTimeout(() => msg.innerHTML = '', 5000);
+        }
+
+        function showApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display = 'flex';
+            document.getElementById('currentUsername').textContent = currentUsername;
+            loadQuestions();
+            loadAstrologers();
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('username');
+            authToken = null;
+            currentUsername = null;
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('appScreen').style.display = 'none';
+            document.getElementById('loginForm').reset();
+            document.getElementById('registerForm').reset();
+        }
+
+        // NAVIGATION
+        function switchView(view) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(view).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // QUESTIONS
+        async function submitQuestion(e) {
+            e.preventDefault();
+            const text = document.getElementById('questionText').value;
+            const category = document.getElementById('questionCategory').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/questions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        text,
+                        category,
+                        birth_info: {}
+                    })
+                });
+
+                if (response.ok) {
+                    showMessage('Question submitted successfully!', 'success');
+                    document.getElementById('questionText').value = '';
+                    loadQuestions();
+                    setTimeout(() => switchView('myQuestions'), 1000);
+                } else {
+                    showMessage('Failed to submit question', 'error');
+                }
+            } catch (err) {
+                showMessage('Error: ' + err.message, 'error');
+            }
+        }
+
+        async function loadQuestions() {
+            try {
+                const response = await fetch(`${API_BASE}/api/questions`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                const questions = await response.json();
+                const list = document.getElementById('questionsList');
+
+                if (!questions || questions.length === 0) {
+                    list.innerHTML = '<div class="empty-state"><h3>No questions yet</h3><p>Ask your first question to get started!</p></div>';
+                    return;
+                }
+
+                list.innerHTML = questions.map(q => `
+                    <div class="question-card" onclick="viewQuestion(${q.id})">
+                        <h3>${q.text.substring(0, 50)}...</h3>
+                        <p>${q.text}</p>
+                        <div>
+                            <span class="question-status status-${q.status.toLowerCase()}">${q.status}</span>
+                            <span style="margin-left: 10px; color: #999; font-size: 12px;">${new Date(q.created_at).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading questions:', err);
+            }
+        }
+
+        async function loadAstrologers() {
+            try {
+                const response = await fetch(`${API_BASE}/api/astrologers`);
+                const astrologers = await response.json();
+                const list = document.getElementById('astrologersList');
+
+                if (!astrologers || astrologers.length === 0) {
+                    list.innerHTML = '<div class="empty-state"><h3>No astrologers available</h3></div>';
+                    return;
+                }
+
+                list.innerHTML = astrologers.map(a => `
+                    <div class="astrologer-card">
+                        <div class="astrologer-name">${a.username}</div>
+                        <div class="astrologer-info">
+                            <strong>Specialization:</strong> ${a.specialization || 'General'}<br>
+                            <strong>Experience:</strong> ${a.experience_years || 'N/A'} years
+                        </div>
+                        <div class="rating">⭐ ${(a.avg_rating || 0).toFixed(1)} / 5.0</div>
+                        <button class="consult-btn" onclick="contactAstrologer('${a.username}')">Contact</button>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading astrologers:', err);
+            }
+        }
+
+        function contactAstrologer(name) {
+            alert(`You can now communicate with ${name} through your questions!`);
+        }
+
+        function viewQuestion(id) {
+            alert(`View question ${id} - Chat interface coming soon!`);
+        }
+
+        // CHECK IF ALREADY LOGGED IN
+        if (authToken && currentUsername) {
+            showApp();
+        }
+    </script>
+</body>
+</html>
